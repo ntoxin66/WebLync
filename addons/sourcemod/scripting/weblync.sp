@@ -16,6 +16,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#include <weblync>
 #include <dynamic>
 #include <steamworks>
 #pragma newdecls required
@@ -31,8 +32,15 @@ public Plugin myinfo =
 	name = "WebLync",
 	author = "Neuro Toxin",
 	description = "Browser redirection for CS:GO",
-	version = "0.0.1",
+	version = "0.0.2",
 	url = "https://weblync.tokenstash.com"
+}
+
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+	CreateNatives();
+	RegPluginLibrary("weblync");
+	return APLRes_Success;
 }
 
 public void OnAllPluginsLoaded()
@@ -55,6 +63,11 @@ public void OnPluginEnd()
 public void OnMapStart()
 {
 	GetServerLinks();
+}
+
+stock void CreateNatives()
+{
+	CreateNative("WebLync_OpenUrl", Native_WebLync_OpenUrl);
 }
 
 stock void LoadSettings()
@@ -232,7 +245,7 @@ public Action OnWebLyncLinkCommand(int client, int args)
 	return Plugin_Handled;
 }
 
-stock void DisplayWebLync(int client, char[] linkname)
+stock void DisplayWebLync(int client, const char[] linkname)
 {
 	char[] url = "http://weblync.tokenstash.com/api/requestlink/v0001.php";
 	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, url);
@@ -240,6 +253,7 @@ stock void DisplayWebLync(int client, char[] linkname)
 	if (request == null)
 	{
 		PrintToChat(client, "WebLync: Error requesting link.");
+		PrintToConsole(client, "WebLync: Error requesting link.");
 		return;
 	}
 	
@@ -255,7 +269,34 @@ stock void DisplayWebLync(int client, char[] linkname)
 	
 	SteamWorks_SetHTTPCallbacks(request, OnRequestWebLyncCallback);
 	SteamWorks_SendHTTPRequest(request);
-	ReplyToCommand(client, "[WebLync] \x05Requesting link `%s`...", linkname[3]);
+	PrintToChat(client, "[WebLync] Requesting link `%s`...", linkname[3]);
+	PrintToConsole(client, "[WebLync] Requesting link `%s`...", linkname[3]);
+}
+
+stock void DisplayWebLyncUrl(int client, const char[] url)
+{
+	char[] apiurl = "http://weblync.tokenstash.com/api/requestcustomlink/v0001.php";
+	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, apiurl);
+	
+	if (request == null)
+	{
+		PrintToChat(client, "WebLync: Error requesting link.");
+		PrintToConsole(client, "WebLync: Error requesting link.");
+		return;
+	}
+	
+	char ServerKey[65]; char UserId[16];
+	Settings.GetServerKey(ServerKey, sizeof(ServerKey));
+	IntToString(GetClientUserId(client), UserId, sizeof(UserId));
+	
+	SteamWorks_SetHTTPRequestGetOrPostParameter(request, "ServerKey", ServerKey);
+	SteamWorks_SetHTTPRequestGetOrPostParameter(request, "UserId", UserId);
+	SteamWorks_SetHTTPRequestGetOrPostParameter(request, "Url", url);
+	
+	SteamWorks_SetHTTPCallbacks(request, OnRequestWebLyncCallback);
+	SteamWorks_SendHTTPRequest(request);
+	PrintToChat(client, "[WebLync] Requesting custom link...");
+	PrintToConsole(client, "[WebLync] Requesting custom link...");
 }
 
 stock void AddUrlReplacementsToRequest(int client, Handle request)
@@ -312,8 +353,39 @@ public int ProcessWebLyncRequest(char[] response)
 		
 		Format(Url, sizeof(Url), "http://weblync.tokenstash.com/api/redirect/v0001.php?UserId=%s&ServerKey=%s", UserId, ServerKey);
 		ShowMOTDPanel(client, "WebLync", Url, MOTDPANEL_TYPE_URL);
-		ReplyToCommand(client, "[WebLync] Opening Link...");
+		PrintToChat(client, "[WebLync] Opening Link...");
+		PrintToConsole(client, "[WebLync] Opening Link...");
 		PrintToConsole(client, Url);
 	}
+	else if (StrContains(response, "ERROR ") == 0)
+	{
+		char errordetails[3][256];
+		ExplodeString(response, " ", errordetails, sizeof(errordetails), sizeof(errordetails[]), true);
+		int client = GetClientOfUserId(StringToInt(errordetails[1]));
+		if (client > 0)
+		{
+			PrintToChat(client, "[WebLync] Error opening link (%s)", errordetails[2]);
+			PrintToConsole(client, "[WebLync] Error opening link (%s)", errordetails[2]);
+		}
+		LogError("Error reported from API (%s).", errordetails[2]);
+	}
+	else
+	{
+		LogError("Invalid API response (%s).", response);
+	}
+	return 1;
+}
+
+// native void WebLync_OpenUrl(int client, const char[] url);
+public int Native_WebLync_OpenUrl(Handle plugin, int params)
+{
+	int client = GetNativeCell(1);
+	
+	int urllength;
+	GetNativeStringLength(2, urllength);
+	char[] url = new char[urllength];
+	GetNativeString(2, url, urllength);
+	
+	DisplayWebLyncUrl(client, url);
 	return 1;
 }
