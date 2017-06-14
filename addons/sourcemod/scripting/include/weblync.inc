@@ -22,11 +22,17 @@
 #endif
 #define _webblync_included
 
+typedef WebLyncGetUrlParam = function bool (int client, const char[] paramname, char[] buffer, int maxlength);
+
 native void WebLync_OpenUrl(int client, const char[] url);
+native void WebLync_RegisterUrlParam(const char[] paramname, WebLyncGetUrlParam callback);
+native void WebLync_UnregisterUrlParam(const char[] paramname);
 
 public __pl_weblync_SetNTVOptional()
 {
 	MarkNativeAsOptional("WebLync_OpenUrl");
+	MarkNativeAsOptional("WebLync_RegisterUrlParam");
+	MarkNativeAsOptional("WebLync_UnregisterUrlParam");
 }
 
 public SharedPlugin __pl_weblync = 

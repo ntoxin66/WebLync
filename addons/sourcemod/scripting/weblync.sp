@@ -23,9 +23,11 @@
 #pragma semicolon 1
 
 #include <dynamic/methodmaps/weblync/settings>
+#include <dynamic/methodmaps/weblync/paramcallback>
 
-static WebLyncSettings Settings;
-static Dynamic ServerLinks;
+static WebLyncSettings Settings = view_as<WebLyncSettings>(INVALID_DYNAMIC_OBJECT);
+static Dynamic ServerLinks = INVALID_DYNAMIC_OBJECT;
+static Dynamic ParamCallbacks = INVALID_DYNAMIC_OBJECT;
 
 public Plugin myinfo =
 {
@@ -58,6 +60,9 @@ public void OnPluginEnd()
 		
 	if (ServerLinks.IsValid)
 		ServerLinks.Dispose();
+		
+	if (ParamCallbacks.IsValid)
+		ParamCallbacks.Dispose();
 }
 
 public void OnMapStart()
@@ -68,6 +73,8 @@ public void OnMapStart()
 stock void CreateNatives()
 {
 	CreateNative("WebLync_OpenUrl", Native_WebLync_OpenUrl);
+	CreateNative("WebLync_RegisterUrlParam", Native_WebLync_RegisterUrlParam);
+	CreateNative("WebLync_UnregisterUrlParam", Native_WebLync_UnregisterUrlParam);
 }
 
 stock void LoadSettings()
@@ -247,7 +254,7 @@ public Action OnWebLyncLinkCommand(int client, int args)
 
 stock void DisplayWebLync(int client, const char[] linkname)
 {
-	char[] url = "http://weblync.tokenstash.com/api/requestlink/v0001.php";
+	char[] url = "http://weblync.tokenstash.com/api/requestlink/v0002.php";
 	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, url);
 	
 	if (request == null)
@@ -266,6 +273,7 @@ stock void DisplayWebLync(int client, const char[] linkname)
 	SteamWorks_SetHTTPRequestGetOrPostParameter(request, "LinkName", linkname[3]);
 	
 	AddUrlReplacementsToRequest(client, request);
+	AddThirdPartyPostReplacements(client, request);
 	
 	SteamWorks_SetHTTPCallbacks(request, OnRequestWebLyncCallback);
 	SteamWorks_SendHTTPRequest(request);
@@ -289,9 +297,13 @@ stock void DisplayWebLyncUrl(int client, const char[] url)
 	Settings.GetServerKey(ServerKey, sizeof(ServerKey));
 	IntToString(GetClientUserId(client), UserId, sizeof(UserId));
 	
+	static char buffer[4096];
+	strcopy(buffer, sizeof(buffer), url);
+	AddThirdPartyUrlReplacements(client, buffer, sizeof(buffer));
+	
 	SteamWorks_SetHTTPRequestGetOrPostParameter(request, "ServerKey", ServerKey);
 	SteamWorks_SetHTTPRequestGetOrPostParameter(request, "UserId", UserId);
-	SteamWorks_SetHTTPRequestGetOrPostParameter(request, "Url", url);
+	SteamWorks_SetHTTPRequestGetOrPostParameter(request, "Url", buffer);
 	
 	SteamWorks_SetHTTPCallbacks(request, OnRequestWebLyncCallback);
 	SteamWorks_SendHTTPRequest(request);
@@ -327,6 +339,77 @@ stock void AddUrlReplacementsToRequest(int client, Handle request)
 	SteamWorks_SetHTTPRequestGetOrPostParameter(request, "Args", buffer);
 }
 
+stock void AddThirdPartyPostReplacements(int client, Handle request)
+{
+	if (!ParamCallbacks.IsValid)
+		return;
+	
+	int count = ParamCallbacks.MemberCount;
+	DynamicOffset memberoffset;
+	char paramname[DYNAMIC_MEMBERNAME_MAXLEN];
+	char buffer[512];
+	bool result;
+	
+	for (int i = 0; i < count; i++)
+	{
+		memberoffset = ParamCallbacks.GetMemberOffsetByIndex(i);
+		ParamCallbacks.GetMemberNameByIndex(i, paramname, sizeof(paramname));
+		
+		WebLyncParamCallback callback = view_as<WebLyncParamCallback>(ParamCallbacks.GetDynamicByOffset(memberoffset));
+		if (!callback.IsValid)
+			continue;
+			
+		// typedef WebLyncGetUrlParam = function bool (int client, const char[] paramname, char[] buffer, int maxlength);
+		Call_StartFunction(callback.OwnerPlugin, view_as<Function>(callback.Callback));
+		Call_PushCell(client);
+		Call_PushString(paramname);
+		Call_PushStringEx(buffer, sizeof(buffer), SM_PARAM_STRING_UTF8, SM_PARAM_COPYBACK);
+		Call_PushCell(sizeof(buffer));
+		Call_Finish(result);
+		
+		if (!result)
+			continue;
+		
+		Format(paramname, sizeof paramname, "customparam_%s", paramname);
+		SteamWorks_SetHTTPRequestGetOrPostParameter(request, paramname, buffer);	
+	}
+}
+
+stock void AddThirdPartyUrlReplacements(int client, char[] url, int maxlength)
+{
+	int count = ParamCallbacks.MemberCount;
+	DynamicOffset memberoffset;
+	char paramname[DYNAMIC_MEMBERNAME_MAXLEN];
+	char buffer[512];
+	bool result;
+	
+	for (int i = 0; i < count; i++)
+	{
+		memberoffset = ParamCallbacks.GetMemberOffsetByIndex(i);
+		ParamCallbacks.GetMemberNameByIndex(i, paramname, sizeof(paramname));
+		
+		if (StrContains(url, paramname) == -1)
+			continue;
+			
+		WebLyncParamCallback callback = view_as<WebLyncParamCallback>(ParamCallbacks.GetDynamicByOffset(memberoffset));
+		if (!callback.IsValid)
+			continue;
+			
+		// typedef WebLyncGetUrlParam = function bool (int client, const char[] paramname, char[] buffer, int maxlength);
+		Call_StartFunction(callback.OwnerPlugin, view_as<Function>(callback.Callback));
+		Call_PushCell(client);
+		Call_PushString(paramname);
+		Call_PushStringEx(buffer, sizeof(buffer), SM_PARAM_STRING_UTF8, SM_PARAM_COPYBACK);
+		Call_PushCell(sizeof(buffer));
+		Call_Finish(result);
+		
+		if (!result)
+			continue;
+			
+		ReplaceString(url, maxlength, paramname, buffer);
+	}
+}
+
 public int OnRequestWebLyncCallback(Handle request, bool failure, bool requestSuccessful, EHTTPStatusCode statusCode)
 {
 	if (!failure && requestSuccessful && statusCode == k_EHTTPStatusCode200OK)
@@ -355,7 +438,6 @@ public int ProcessWebLyncRequest(char[] response)
 		ShowMOTDPanel(client, "WebLync", Url, MOTDPANEL_TYPE_URL);
 		PrintToChat(client, "[WebLync] Opening Link...");
 		PrintToConsole(client, "[WebLync] Opening Link...");
-		PrintToConsole(client, Url);
 	}
 	else if (StrContains(response, "ERROR ") == 0)
 	{
@@ -387,5 +469,41 @@ public int Native_WebLync_OpenUrl(Handle plugin, int params)
 	GetNativeString(2, url, urllength);
 	
 	DisplayWebLyncUrl(client, url);
+	return 1;
+}
+
+// native void WebLync_RegisterUrlParam(const char[] paramname, WebLyncGetUrlParam callback);
+public int Native_WebLync_RegisterUrlParam(Handle plugin, int params)
+{
+	if (!ParamCallbacks.IsValid)
+		ParamCallbacks = Dynamic();
+		
+	int paramnamelength;
+	GetNativeStringLength(1, paramnamelength);
+	char[] paramname = new char[++paramnamelength];
+	GetNativeString(1, paramname, paramnamelength);
+	
+	WebLyncParamCallback callback = WebLyncParamCallback();
+	callback.OwnerPlugin = plugin;
+	callback.Callback = GetNativeCell(2);
+	
+	ParamCallbacks.SetDynamic(paramname, callback);
+	return 1;
+}
+
+// native void WebLync_UnregisterUrlParam(const char[] paramname);
+public int Native_WebLync_UnregisterUrlParam(Handle plugin, int params)
+{
+	int paramnamelength;
+	GetNativeStringLength(1, paramnamelength);
+	char[] paramname = new char[++paramnamelength];
+	GetNativeString(1, paramname, paramnamelength);
+	
+	Dynamic callback = ParamCallbacks.GetDynamic(paramname);
+	if (callback.IsValid)
+	{
+		callback.Dispose();
+		ParamCallbacks.SetDynamic(paramname, INVALID_DYNAMIC_OBJECT);
+	}
 	return 1;
 }
