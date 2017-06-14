@@ -34,7 +34,7 @@ public Plugin myinfo =
 	name = "WebLync",
 	author = "Neuro Toxin",
 	description = "Browser redirection for CS:GO",
-	version = "0.0.3",
+	version = "0.0.4",
 	url = "https://weblync.tokenstash.com"
 }
 
@@ -377,6 +377,9 @@ stock void AddThirdPartyPostReplacements(int client, Handle request)
 
 stock void AddThirdPartyUrlReplacements(int client, char[] url, int maxlength)
 {
+	if (!ParamCallbacks.IsValid)
+		return;
+		
 	int count = ParamCallbacks.MemberCount;
 	DynamicOffset memberoffset;
 	char paramname[DYNAMIC_MEMBERNAME_MAXLEN];
