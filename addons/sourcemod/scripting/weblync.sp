@@ -34,7 +34,7 @@ public Plugin myinfo =
 	name = "WebLync",
 	author = "Neuro Toxin",
 	description = "Browser redirection for CS:GO",
-	version = "0.0.2",
+	version = "0.0.3",
 	url = "https://weblync.tokenstash.com"
 }
 
