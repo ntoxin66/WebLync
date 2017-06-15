@@ -34,7 +34,7 @@ public Plugin myinfo =
 	name = "WebLync",
 	author = "Neuro Toxin",
 	description = "Browser redirection for CS:GO",
-	version = "0.0.4",
+	version = "0.0.5",
 	url = "https://weblync.tokenstash.com"
 }
 
@@ -254,7 +254,7 @@ public Action OnWebLyncLinkCommand(int client, int args)
 
 stock void DisplayWebLync(int client, const char[] linkname)
 {
-	char[] url = "http://weblync.tokenstash.com/api/requestlink/v0002.php";
+	char[] url = "http://weblync.tokenstash.com/api/requestlink/v0003.php";
 	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, url);
 	
 	if (request == null)
@@ -264,12 +264,14 @@ stock void DisplayWebLync(int client, const char[] linkname)
 		return;
 	}
 	
-	char ServerKey[65]; char UserId[16];
+	char ServerKey[65]; char UserId[16]; char SteamId[32];
 	Settings.GetServerKey(ServerKey, sizeof(ServerKey));
 	IntToString(GetClientUserId(client), UserId, sizeof(UserId));
+	GetClientAuthId(client, AuthId_SteamID64, SteamId, sizeof(SteamId));
 	
 	SteamWorks_SetHTTPRequestGetOrPostParameter(request, "ServerKey", ServerKey);
 	SteamWorks_SetHTTPRequestGetOrPostParameter(request, "UserId", UserId);
+	SteamWorks_SetHTTPRequestGetOrPostParameter(request, "SteamId", SteamId);
 	SteamWorks_SetHTTPRequestGetOrPostParameter(request, "LinkName", linkname[3]);
 	
 	AddUrlReplacementsToRequest(client, request);
@@ -283,7 +285,7 @@ stock void DisplayWebLync(int client, const char[] linkname)
 
 stock void DisplayWebLyncUrl(int client, const char[] url)
 {
-	char[] apiurl = "http://weblync.tokenstash.com/api/requestcustomlink/v0001.php";
+	char[] apiurl = "http://weblync.tokenstash.com/api/requestcustomlink/v0002.php";
 	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, apiurl);
 	
 	if (request == null)
@@ -293,9 +295,10 @@ stock void DisplayWebLyncUrl(int client, const char[] url)
 		return;
 	}
 	
-	char ServerKey[65]; char UserId[16];
+	char ServerKey[65]; char UserId[16]; char SteamId[32];
 	Settings.GetServerKey(ServerKey, sizeof(ServerKey));
 	IntToString(GetClientUserId(client), UserId, sizeof(UserId));
+	GetClientAuthId(client, AuthId_SteamID64, SteamId, sizeof(SteamId));
 	
 	static char buffer[4096];
 	strcopy(buffer, sizeof(buffer), url);
@@ -303,6 +306,7 @@ stock void DisplayWebLyncUrl(int client, const char[] url)
 	
 	SteamWorks_SetHTTPRequestGetOrPostParameter(request, "ServerKey", ServerKey);
 	SteamWorks_SetHTTPRequestGetOrPostParameter(request, "UserId", UserId);
+	SteamWorks_SetHTTPRequestGetOrPostParameter(request, "SteamId", SteamId);
 	SteamWorks_SetHTTPRequestGetOrPostParameter(request, "Url", buffer);
 	
 	SteamWorks_SetHTTPCallbacks(request, OnRequestWebLyncCallback);
@@ -433,11 +437,12 @@ public int ProcessWebLyncRequest(char[] response)
 		if (client == 0)
 			return 0;
 		
-		char ServerKey[65]; char UserId[16]; char Url[512];
+		char ServerKey[65]; char UserId[16]; char SteamId[32]; char Url[512];
 		Settings.GetServerKey(ServerKey, sizeof(ServerKey));
 		IntToString(GetClientUserId(client), UserId, sizeof(UserId));
+		GetClientAuthId(client, AuthId_SteamID64, SteamId, sizeof(SteamId));
 		
-		Format(Url, sizeof(Url), "http://weblync.tokenstash.com/api/redirect/v0001.php?UserId=%s&ServerKey=%s", UserId, ServerKey);
+		Format(Url, sizeof(Url), "http://weblync.tokenstash.com/api/redirect/v0002.php?UserId=%s&ServerKey=%s&SteamId=%s", UserId, ServerKey, SteamId);
 		ShowMOTDPanel(client, "WebLync", Url, MOTDPANEL_TYPE_URL);
 		PrintToChat(client, "[WebLync] Opening Link...");
 		PrintToConsole(client, "[WebLync] Opening Link...");
