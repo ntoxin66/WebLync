@@ -1,0 +1,64 @@
+"Phrases"
+{
+	"WebLync.SteamWorks.RequestError"
+	{
+		"en"		"Unable to create SteamWorks HTTP request."
+	}
+	"WebLync.Server.Registering"
+	{
+		"en"		"Registering server..."
+	}
+	"WebLync.Server.RegisterationFailed"
+	{
+		"en"		"Unable to register server."
+	}
+	"WebLync.Server.RegisterationError"
+	{
+		"#format"	"{1:s}"
+		"en"		"There was an error registering the server ({1})."
+	}
+	"WebLync.Server.RegisterationSuccess"
+	{
+		"en"		"Server registration successful."
+	}
+	"WebLync.API.InvalidResponse"
+	{
+		"#format"	"{1:s}"
+		"en"		"Invalid API response ({1})."
+	}
+	"WebLync.Links.Getting"
+	{
+		"en"		"Getting server links..."
+	}
+	"WebLync.Links.Failed"
+	{
+		"en"		"Unable to get server links."
+	}
+	"WebLync.Links.Error"
+	{
+		"#format"	"{1:s}"
+		"en"		"There was an error getting the servers links ({1})."
+	}
+	"WebLync.Links.Success"
+	{
+		"#format"	"{1:d}"
+		"en"		"{1} link(s) received."
+	}
+	"WebLync.Link.Requesting"
+	{
+		"#format"	"{1:s}"
+		"en"		"Requesting link `{1}`..."
+	}
+	"WebLync.Link.RequestingCustom"
+	{
+		"en"		"Requesting custom link..."
+	}
+	"WebLync.Link.RequestError"
+	{
+		"en"		"Error requesting link."
+	}
+	"WebLync.Link.Opening"
+	{
+		"en"		"Opening Link..."
+	}
+}

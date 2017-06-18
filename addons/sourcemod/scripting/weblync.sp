@@ -34,7 +34,7 @@ public Plugin myinfo =
 	name = "WebLync",
 	author = "Neuro Toxin",
 	description = "Browser redirection for CS:GO",
-	version = "0.0.5",
+	version = "0.0.6",
 	url = "https://weblync.tokenstash.com"
 }
 
@@ -43,6 +43,11 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNatives();
 	RegPluginLibrary("weblync");
 	return APLRes_Success;
+}
+
+public void OnPluginStart()
+{
+	LoadTranslations("webblync.phrases");
 }
 
 public void OnAllPluginsLoaded()
@@ -67,6 +72,7 @@ public void OnPluginEnd()
 
 public void OnMapStart()
 {
+	LoadSettings();
 	GetServerLinks();
 }
 
@@ -110,7 +116,7 @@ public Action OnWebLyncRegServerCommand(int client, int args)
 	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, url);
 	
 	if (request == null)
-		ReplyToCommand(client, "WebLync: Unable to create SteamWorks HTTP request.");
+		ReplyToCommand(client, "[WebLync] %T", "WebLync.SteamWorks.RequestError", LANG_SERVER);
 	
 	char ServerKey[65]; char SteamId[25]; char ServerName[129]; char IpAddress[17]; char Port[13];
 	GetCmdArg(1, ServerKey, sizeof(ServerKey));
@@ -127,8 +133,8 @@ public Action OnWebLyncRegServerCommand(int client, int args)
 	SteamWorks_SetHTTPCallbacks(request, OnRegisterServerCallback);
 	SteamWorks_SendHTTPRequest(request);
 	
-	ReplyToCommand(client, "WebLync: Registering server...");
-	PrintToServer("WebLync: Registering server...");
+	ReplyToCommand(client, "[WebLync] %T", "WebLync.Server.Registering", LANG_SERVER);
+	PrintToServer("[WebLync] %T", "WebLync.Server.Registering", LANG_SERVER);
 	return Plugin_Handled;
 }
 
@@ -164,7 +170,7 @@ public int OnRegisterServerCallback(Handle request, bool failure, bool requestSu
 	if (!failure && requestSuccessful && statusCode == k_EHTTPStatusCode200OK)
 		SteamWorks_GetHTTPResponseBodyCallback(request, RegisterServerResponse);
 	else
-		LogError("Unable to register server");
+		LogError("%T", "WebLync.Server.RegisterationFailed", LANG_SERVER);
 	
 	delete request;
 }
@@ -173,19 +179,19 @@ public int RegisterServerResponse(char[] response)
 {
 	if (StrContains(response, "ERROR ") == 0)
 	{
-		PrintToChatAll("[WebLync] There was an error registering the server (%s).", response[6]);
+		PrintToChatAll("[WebLync] %T", "WebLync.Server.RegisterationError", LANG_SERVER, response[6]);
 	}
 	else if (StrContains(response, "OK ") == 0)
 	{
 		Settings.SetServerKey(response[3]);
 		SaveSettings();
-		PrintToChatAll("[WebLync] Server registration successful.");
-		PrintToServer("WebLync: Server registration successful.");
+		PrintToChatAll("[WebLync] %T", "WebLync.Server.RegisterationSuccess", LANG_SERVER);
+		PrintToServer("[WebLync] %T", "WebLync.Server.RegisterationSuccess", LANG_SERVER);
 		GetServerLinks();
 	}
 	else
 	{
-		LogError("Invalid API response (%s).", response);
+		LogError("%T", "WebLync.API.InvalidResponse", LANG_SERVER, response);
 	}
 }
 
@@ -195,7 +201,7 @@ stock void GetServerLinks()
 	Handle request = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, url);
 	
 	if (request == null)
-		PrintToServer("WebLync: Unable to create SteamWorks HTTP request.");
+		PrintToServer("[WebLync] %T", "WebLync.SteamWorks.RequestError", LANG_SERVER);
 	
 	char ServerKey[65];
 	Settings.GetServerKey(ServerKey, sizeof(ServerKey));
@@ -204,7 +210,7 @@ stock void GetServerLinks()
 	SteamWorks_SetHTTPCallbacks(request, OnGetServerLinksCallback);
 	SteamWorks_SendHTTPRequest(request);
 	
-	PrintToServer("WebLync: Getting server links...");
+	PrintToServer("[WebLync] %T", "WebLync.Links.Getting", LANG_SERVER);
 }
 
 public int OnGetServerLinksCallback(Handle request, bool failure, bool requestSuccessful, EHTTPStatusCode statusCode)
@@ -212,7 +218,7 @@ public int OnGetServerLinksCallback(Handle request, bool failure, bool requestSu
 	if (!failure && requestSuccessful && statusCode == k_EHTTPStatusCode200OK)
 		SteamWorks_GetHTTPResponseBodyCallback(request, ServerLinksResponse);
 	else
-		PrintToServer("WebLync: Unable to get server links");
+		PrintToServer("[WebLync] %T", "WebLync.Links.Failed", LANG_SERVER);
 	
 	delete request;
 }
@@ -221,7 +227,7 @@ public int ServerLinksResponse(char[] response)
 {
 	if (StrContains(response, "ERROR ") == 0)
 	{
-		LogError("Error reported from API (%s).", response[6]);
+		LogError("%T", "WebLync.Links.Error", LANG_SERVER, response[6]);
 	}
 	else if (StrContains(response, "OK ") == 0)
 	{
@@ -236,11 +242,11 @@ public int ServerLinksResponse(char[] response)
 			RegConsoleCmd(links[i], OnWebLyncLinkCommand);
 			ServerLinks.SetBool(links[i], true);
 		}
-		PrintToServer("WebLync: %d link(s) received", count);
+		PrintToServer("[WebLync] %T", "WebLync.Links.Success", LANG_SERVER, count);
 	}
 	else
 	{
-		LogError("Invalid API response (%s).", response);
+		LogError("%T", "WebLync.API.InvalidResponse", LANG_SERVER, response);
 	}
 }
 
@@ -259,8 +265,8 @@ stock void DisplayWebLync(int client, const char[] linkname)
 	
 	if (request == null)
 	{
-		PrintToChat(client, "WebLync: Error requesting link.");
-		PrintToConsole(client, "WebLync: Error requesting link.");
+		PrintToChat(client, "[WebLync] %T", "WebLync.Link.RequestError", LANG_SERVER);
+		PrintToConsole(client, "[WebLync] %T", "WebLync.Link.RequestError", LANG_SERVER);
 		return;
 	}
 	
@@ -279,8 +285,11 @@ stock void DisplayWebLync(int client, const char[] linkname)
 	
 	SteamWorks_SetHTTPCallbacks(request, OnRequestWebLyncCallback);
 	SteamWorks_SendHTTPRequest(request);
-	PrintToChat(client, "[WebLync] Requesting link `%s`...", linkname[3]);
-	PrintToConsole(client, "[WebLync] Requesting link `%s`...", linkname[3]);
+	if (Settings.ShowMessages)
+	{
+		PrintToChat(client, "[WebLync] %T", "WebLync.Link.Requesting", LANG_SERVER, linkname[3]);
+		PrintToConsole(client, "[WebLync] %T", "WebLync.Link.Requesting", LANG_SERVER, linkname[3]);
+	}
 }
 
 stock void DisplayWebLyncUrl(int client, const char[] url)
@@ -290,8 +299,8 @@ stock void DisplayWebLyncUrl(int client, const char[] url)
 	
 	if (request == null)
 	{
-		PrintToChat(client, "WebLync: Error requesting link.");
-		PrintToConsole(client, "WebLync: Error requesting link.");
+		PrintToChat(client, "[WebLync] %T", "WebLync.Link.RequestError", LANG_SERVER);
+		PrintToConsole(client, "[WebLync] %T", "WebLync.Link.RequestError", LANG_SERVER);
 		return;
 	}
 	
@@ -311,8 +320,11 @@ stock void DisplayWebLyncUrl(int client, const char[] url)
 	
 	SteamWorks_SetHTTPCallbacks(request, OnRequestWebLyncCallback);
 	SteamWorks_SendHTTPRequest(request);
-	PrintToChat(client, "[WebLync] Requesting custom link...");
-	PrintToConsole(client, "[WebLync] Requesting custom link...");
+	if (Settings.ShowMessages)
+	{
+		PrintToChat(client, "[WebLync] %T", "WebLync.Link.RequestingCustom", LANG_SERVER);
+		PrintToConsole(client, "[WebLync] %T", "WebLync.Link.RequestingCustom", LANG_SERVER);
+	}
 }
 
 stock void AddUrlReplacementsToRequest(int client, Handle request)
@@ -422,7 +434,7 @@ public int OnRequestWebLyncCallback(Handle request, bool failure, bool requestSu
 	if (!failure && requestSuccessful && statusCode == k_EHTTPStatusCode200OK)
 		SteamWorks_GetHTTPResponseBodyCallback(request, ProcessWebLyncRequest);
 	else
-		PrintToServer("WebLync: Unable to request link");
+		PrintToServer("[WebLync] %T", "WebLync.Link.RequestError", LANG_SERVER);
 	
 	delete request;
 }
@@ -444,8 +456,11 @@ public int ProcessWebLyncRequest(char[] response)
 		
 		Format(Url, sizeof(Url), "http://weblync.tokenstash.com/api/redirect/v0002.php?UserId=%s&ServerKey=%s&SteamId=%s", UserId, ServerKey, SteamId);
 		ShowMOTDPanel(client, "WebLync", Url, MOTDPANEL_TYPE_URL);
-		PrintToChat(client, "[WebLync] Opening Link...");
-		PrintToConsole(client, "[WebLync] Opening Link...");
+		if (Settings.ShowMessages)
+		{
+			PrintToChat(client, "[WebLync] %T", "WebLync.Link.Opening", LANG_SERVER);
+			PrintToConsole(client, "[WebLync] %T", "WebLync.Link.Opening", LANG_SERVER);
+		}
 	}
 	else if (StrContains(response, "ERROR ") == 0)
 	{
@@ -454,14 +469,14 @@ public int ProcessWebLyncRequest(char[] response)
 		int client = GetClientOfUserId(StringToInt(errordetails[1]));
 		if (client > 0)
 		{
-			PrintToChat(client, "[WebLync] Error opening link (%s)", errordetails[2]);
-			PrintToConsole(client, "[WebLync] Error opening link (%s)", errordetails[2]);
+			PrintToChat(client, "[WebLync] %T", "WebLync.API.InvalidResponse", LANG_SERVER, errordetails[2]);
+			PrintToConsole(client, "[WebLync] %T", "WebLync.API.InvalidResponse", LANG_SERVER, errordetails[2]);
 		}
-		LogError("Error reported from API (%s).", errordetails[2]);
+		LogError("%T", "WebLync.API.InvalidResponse", LANG_SERVER, errordetails[2]);
 	}
 	else
 	{
-		LogError("Invalid API response (%s).", response);
+		LogError("%T", "WebLync.API.InvalidResponse", LANG_SERVER, response);
 	}
 	return 1;
 }
@@ -473,7 +488,7 @@ public int Native_WebLync_OpenUrl(Handle plugin, int params)
 	
 	int urllength;
 	GetNativeStringLength(2, urllength);
-	char[] url = new char[urllength];
+	char[] url = new char[++urllength];
 	GetNativeString(2, url, urllength);
 	
 	DisplayWebLyncUrl(client, url);
