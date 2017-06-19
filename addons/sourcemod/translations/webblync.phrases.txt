@@ -3,62 +3,76 @@
 	"WebLync.SteamWorks.RequestError"
 	{
 		"en"		"Unable to create SteamWorks HTTP request."
+		"fr"		"Impossible de créer une requête HTTP SteamWorks."
 	}
 	"WebLync.Server.Registering"
 	{
 		"en"		"Registering server..."
+		"fr"		"Enregistrement du serveur..."
 	}
 	"WebLync.Server.RegisterationFailed"
 	{
 		"en"		"Unable to register server."
+		"fr"		"Impossible d'enregistrer le serveur."
 	}
 	"WebLync.Server.RegisterationError"
 	{
 		"#format"	"{1:s}"
 		"en"		"There was an error registering the server ({1})."
+		"fr"		"Une erreur s'est produite lors de l'enregistrement du serveur ({1})."
 	}
 	"WebLync.Server.RegisterationSuccess"
 	{
 		"en"		"Server registration successful."
+		"fr"		"Enregistrement du serveur réussie."
 	}
 	"WebLync.API.InvalidResponse"
 	{
 		"#format"	"{1:s}"
 		"en"		"Invalid API response ({1})."
+		"fr"		"Réponse invalide de l'API ({1})."
 	}
 	"WebLync.Links.Getting"
 	{
 		"en"		"Getting server links..."
+		"fr"		"Obtention des URL en cours..."
 	}
 	"WebLync.Links.Failed"
 	{
 		"en"		"Unable to get server links."
+		"fr"		"Impossible d'obtenir les liens avec le serveur."
 	}
 	"WebLync.Links.Error"
 	{
 		"#format"	"{1:s}"
 		"en"		"There was an error getting the servers links ({1})."
+		"fr"		"Une erreur s'est produite lors de l'obtention des liens avec le serveur."
 	}
 	"WebLync.Links.Success"
 	{
 		"#format"	"{1:d}"
 		"en"		"{1} link(s) received."
+		"fr"		"{1} Lien(s) reçu."
 	}
 	"WebLync.Link.Requesting"
 	{
 		"#format"	"{1:s}"
 		"en"		"Requesting link `{1}`..."
+		"fr"		"Demande de lien en cours `{1}`..."
 	}
 	"WebLync.Link.RequestingCustom"
 	{
 		"en"		"Requesting custom link..."
+		"fr"		"Demander d'un lien personnalisé en cours..."
 	}
 	"WebLync.Link.RequestError"
 	{
 		"en"		"Error requesting link."
+		"fr"		"Erreur lors de la requête du lien..."
 	}
 	"WebLync.Link.Opening"
 	{
 		"en"		"Opening Link..."
+		"fr"		"Ouverture du lien..."
 	}
 }
