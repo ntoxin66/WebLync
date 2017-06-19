@@ -1,78 +1,92 @@
-"Phrases"
+﻿"Phrases"
 {
 	"WebLync.SteamWorks.RequestError"
 	{
 		"en"		"Unable to create SteamWorks HTTP request."
-		"fr"		"Impossible de cr�er une requ�te HTTP SteamWorks."
+		"fr"		"Impossible de créer une requête HTTP SteamWorks."
+		"ru"		"Не удалось создать HTTP-запрос SteamWorks."
 	}
 	"WebLync.Server.Registering"
 	{
 		"en"		"Registering server..."
 		"fr"		"Enregistrement du serveur..."
+		"ru"		"Регистрация сервера..."
 	}
 	"WebLync.Server.RegisterationFailed"
 	{
 		"en"		"Unable to register server."
 		"fr"		"Impossible d'enregistrer le serveur."
+		"ru"		"Не удалось зарегистрировать сервер."
 	}
 	"WebLync.Server.RegisterationError"
 	{
 		"#format"	"{1:s}"
 		"en"		"There was an error registering the server ({1})."
 		"fr"		"Une erreur s'est produite lors de l'enregistrement du serveur ({1})."
+		"ru"		"Произошла ошибка при регистрации сервера ({1})."
 	}
 	"WebLync.Server.RegisterationSuccess"
 	{
 		"en"		"Server registration successful."
-		"fr"		"Enregistrement du serveur r�ussie."
+		"fr"		"Enregistrement du serveur réussie."
+		"ru"		"Сервер успешно зарегистрирован."
 	}
 	"WebLync.API.InvalidResponse"
 	{
 		"#format"	"{1:s}"
 		"en"		"Invalid API response ({1})."
-		"fr"		"R�ponse invalide de l'API ({1})."
+		"fr"		"Réponse invalide de l'API ({1})."
+		"ru"		"Недопустимый ответ API ({1})."
 	}
 	"WebLync.Links.Getting"
 	{
 		"en"		"Getting server links..."
 		"fr"		"Obtention des URL en cours..."
+		"ru"		"Получение ссылок на сервер..."
 	}
 	"WebLync.Links.Failed"
 	{
 		"en"		"Unable to get server links."
 		"fr"		"Impossible d'obtenir les liens avec le serveur."
+		"ru"		"Не удалось получить ссылки на сервер."
 	}
 	"WebLync.Links.Error"
 	{
 		"#format"	"{1:s}"
 		"en"		"There was an error getting the servers links ({1})."
-		"fr"		"Une erreur s'est produite lors de l'obtention des liens avec le serveur."
+		"fr"		"Une erreur s'est produite lors de l'obtention des liens avec le serveur ({1})."
+		"ru"		"Произошла ошибка при получении ссылок на серверы ({1})."
 	}
 	"WebLync.Links.Success"
 	{
 		"#format"	"{1:d}"
 		"en"		"{1} link(s) received."
-		"fr"		"{1} Lien(s) re�u."
+		"fr"		"{1} Lien(s) reçu."
+		"ru"		"{1} ссылка(и) получена."
 	}
 	"WebLync.Link.Requesting"
 	{
 		"#format"	"{1:s}"
 		"en"		"Requesting link `{1}`..."
 		"fr"		"Demande de lien en cours `{1}`..."
+		"ru"		"Запрос ссылки `{1}`..."
 	}
 	"WebLync.Link.RequestingCustom"
 	{
 		"en"		"Requesting custom link..."
-		"fr"		"Demander d'un lien personnalis� en cours..."
+		"fr"		"Demander d'un lien personnalisé en cours..."
+		"ru"		"Запрос пользовательской ссылки..."
 	}
 	"WebLync.Link.RequestError"
 	{
 		"en"		"Error requesting link."
-		"fr"		"Erreur lors de la requ�te du lien..."
+		"fr"		"Erreur lors de la requête du lien..."
+		"ru"		"Ошибка при запросе ссылки."
 	}
 	"WebLync.Link.Opening"
 	{
 		"en"		"Opening Link..."
 		"fr"		"Ouverture du lien..."
+		"ru"		"Открытие ссылки..."
 	}
 }
