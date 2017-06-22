@@ -5,18 +5,21 @@
 		"en"		"Unable to create SteamWorks HTTP request."
 		"fr"		"Impossible de créer une requête HTTP SteamWorks."
 		"ru"		"Не удалось создать HTTP-запрос SteamWorks."
+		"tr"		"SteamWorks HTTP isteği oluşturulamadı."
 	}
 	"WebLync.Server.Registering"
 	{
 		"en"		"Registering server..."
 		"fr"		"Enregistrement du serveur..."
 		"ru"		"Регистрация сервера..."
+		"tr"		"Sunucu kayıt ediliyor..."
 	}
 	"WebLync.Server.RegisterationFailed"
 	{
 		"en"		"Unable to register server."
 		"fr"		"Impossible d'enregistrer le serveur."
 		"ru"		"Не удалось зарегистрировать сервер."
+		"tr"		"Sunucu kayıt edilemedi"
 	}
 	"WebLync.Server.RegisterationError"
 	{
@@ -24,12 +27,14 @@
 		"en"		"There was an error registering the server ({1})."
 		"fr"		"Une erreur s'est produite lors de l'enregistrement du serveur ({1})."
 		"ru"		"Произошла ошибка при регистрации сервера ({1})."
+		"tr"		"Sunucu kaydedilirken bir hata oluştu ({1})."
 	}
 	"WebLync.Server.RegisterationSuccess"
 	{
 		"en"		"Server registration successful."
 		"fr"		"Enregistrement du serveur réussie."
 		"ru"		"Сервер успешно зарегистрирован."
+		"tr"		"Sunucu başarılı bir şekilde kayıt edildi."
 	}
 	"WebLync.API.InvalidResponse"
 	{
@@ -37,18 +42,21 @@
 		"en"		"Invalid API response ({1})."
 		"fr"		"Réponse invalide de l'API ({1})."
 		"ru"		"Недопустимый ответ API ({1})."
+		"tr"		"Geçersiz API yanıtı ({1})."
 	}
 	"WebLync.Links.Getting"
 	{
 		"en"		"Getting server links..."
 		"fr"		"Obtention des URL en cours..."
 		"ru"		"Получение ссылок на сервер..."
+		"tr"		"Sunucu linkleri alınıyor..."
 	}
 	"WebLync.Links.Failed"
 	{
 		"en"		"Unable to get server links."
 		"fr"		"Impossible d'obtenir les liens avec le serveur."
 		"ru"		"Не удалось получить ссылки на сервер."
+		"tr"		"Sunucu bağlantıları alınamadı."
 	}
 	"WebLync.Links.Error"
 	{
@@ -56,6 +64,7 @@
 		"en"		"There was an error getting the servers links ({1})."
 		"fr"		"Une erreur s'est produite lors de l'obtention des liens avec le serveur ({1})."
 		"ru"		"Произошла ошибка при получении ссылок на серверы ({1})."
+		"tr"		"Sunucular bağlantıları alınırken bir hata oluştu ({1})."
 	}
 	"WebLync.Links.Success"
 	{
@@ -63,6 +72,7 @@
 		"en"		"{1} link(s) received."
 		"fr"		"{1} Lien(s) reçu."
 		"ru"		"{1} ссылка(и) получена."
+		"tr"		"{1} Linkler(s) alındı."
 	}
 	"WebLync.Link.Requesting"
 	{
@@ -70,23 +80,27 @@
 		"en"		"Requesting link `{1}`..."
 		"fr"		"Demande de lien en cours `{1}`..."
 		"ru"		"Запрос ссылки `{1}`..."
+		"tr"		"Linkler Çekiliyor `{1}`..."
 	}
 	"WebLync.Link.RequestingCustom"
 	{
 		"en"		"Requesting custom link..."
 		"fr"		"Demander d'un lien personnalisé en cours..."
 		"ru"		"Запрос пользовательской ссылки..."
+		"tr"		"Özel linkler isteniyor..."
 	}
 	"WebLync.Link.RequestError"
 	{
 		"en"		"Error requesting link."
 		"fr"		"Erreur lors de la requête du lien..."
 		"ru"		"Ошибка при запросе ссылки."
+		"tr"		"Linkler istenirken hata oluştu."
 	}
 	"WebLync.Link.Opening"
 	{
 		"en"		"Opening Link..."
 		"fr"		"Ouverture du lien..."
 		"ru"		"Открытие ссылки..."
+		"tr"		"Link Açılıyor..."
 	}
 }
