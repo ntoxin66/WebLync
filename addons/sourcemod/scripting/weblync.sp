@@ -34,7 +34,7 @@ public Plugin myinfo =
 	name = "WebLync",
 	author = "Neuro Toxin",
 	description = "Browser redirection for CS:GO",
-	version = "0.0.8",
+	version = "0.0.9",
 	url = "https://weblync.tokenstash.com"
 }
 
@@ -55,6 +55,7 @@ public void OnAllPluginsLoaded()
 	Settings = WebLyncSettings();
 	ServerLinks = Dynamic();
 	LoadSettings();
+	SaveSettings(); // saves to new config settings on upgrade
 	RegisterCommands();
 }
 
@@ -68,6 +69,12 @@ public void OnPluginEnd()
 		
 	if (ParamCallbacks.IsValid)
 		ParamCallbacks.Dispose();
+}
+
+public void OnConfigsExecuted()
+{
+	if (Settings.ForceEnableMotd)
+		ServerCommand("sm_cvar sv_disable_motd 0");
 }
 
 public void OnMapStart()
