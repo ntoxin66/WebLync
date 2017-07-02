@@ -265,6 +265,21 @@ public Action OnWebLyncLinkCommand(int client, int args)
 	return Plugin_Handled;
 }
 
+public void OnQueryClientConvar(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue, any value)
+{
+	if (result != ConVarQuery_Okay)
+	{
+		LogError("Unable to query client convar `cl_disablehtmlmotd`");
+		return;
+	}
+	
+	Dynamic playersettings = Dynamic.GetPlayerSettings(client);
+	if (StringToInt(cvarValue) > 0)
+		playersettings.SetBool("cl_disablehtmlmotd", true);
+	else
+		playersettings.SetBool("cl_disablehtmlmotd", false);
+}
+
 stock void DisplayWebLync(int client, const char[] linkname)
 {
 	char[] url = "http://weblync.tokenstash.com/api/requestlink/v0003.php";
@@ -297,6 +312,9 @@ stock void DisplayWebLync(int client, const char[] linkname)
 		PrintToChat(client, "[WebLync] %T", "WebLync.Link.Requesting", LANG_SERVER, linkname[3]);
 		PrintToConsole(client, "[WebLync] %T", "WebLync.Link.Requesting", LANG_SERVER, linkname[3]);
 	}
+	
+	if (Settings.QueryClientMotdStatus)
+		QueryClientConVar(client, "cl_disablehtmlmotd", OnQueryClientConvar);
 }
 
 stock void DisplayWebLyncUrl(int client, const char[] url)
@@ -332,6 +350,9 @@ stock void DisplayWebLyncUrl(int client, const char[] url)
 		PrintToChat(client, "[WebLync] %T", "WebLync.Link.RequestingCustom", LANG_SERVER);
 		PrintToConsole(client, "[WebLync] %T", "WebLync.Link.RequestingCustom", LANG_SERVER);
 	}
+	
+	if (Settings.QueryClientMotdStatus)
+		QueryClientConVar(client, "cl_disablehtmlmotd", OnQueryClientConvar);
 }
 
 stock void AddUrlReplacementsToRequest(int client, Handle request)
@@ -455,6 +476,14 @@ public int ProcessWebLyncRequest(char[] response)
 		
 		if (client == 0)
 			return 0;
+			
+		Dynamic playersettings = Dynamic.GetPlayerSettings(client);
+		if (playersettings.GetBool("cl_disablehtmlmotd"))
+		{
+			PrintToChat(client, "[WebLync] %T", "WebLync.Convar.MotdDisabled", LANG_SERVER);
+			PrintToConsole(client, "[WebLync] %T", "WebLync.Convar.MotdDisabled", LANG_SERVER);
+			return 1;
+		}
 		
 		char ServerKey[65]; char UserId[16]; char SteamId[32]; char Url[512];
 		Settings.GetServerKey(ServerKey, sizeof(ServerKey));

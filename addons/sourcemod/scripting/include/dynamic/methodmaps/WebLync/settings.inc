@@ -34,6 +34,7 @@ methodmap WebLyncSettings < Dynamic
 		myclass.SetString("ServerKey", "", 65);
 		myclass.SetBool("ShowMessages", true);
 		myclass.SetBool("ForceEnableMotd", true);
+		myclass.SetBool("QueryClientMotdStatus", true);
 		return view_as<WebLyncSettings>(myclass);
 	}
 	
@@ -121,6 +122,35 @@ methodmap WebLyncSettings < Dynamic
 				if (offset == INVALID_DYNAMIC_OFFSET)
 				{
 					offset = this.SetBool("ForceEnableMotd", value);
+					return;
+				}
+			}
+			this.SetBoolByOffset(offset, value);
+		}
+	}
+	
+	property bool QueryClientMotdStatus
+	{
+		public get()
+		{
+			static DynamicOffset offset = INVALID_DYNAMIC_OFFSET;
+			if (offset == INVALID_DYNAMIC_OFFSET)
+			{
+				offset = this.GetMemberOffset("QueryClientMotdStatus");
+				if (offset == INVALID_DYNAMIC_OFFSET)
+					SetFailState("A serious error occured in Dynamic!");
+			}
+			return this.GetBoolByOffset(offset);
+		}
+		public set(bool value)
+		{
+			static DynamicOffset offset = INVALID_DYNAMIC_OFFSET;
+			if (offset == INVALID_DYNAMIC_OFFSET)
+			{
+				offset = this.GetMemberOffset("QueryClientMotdStatus");
+				if (offset == INVALID_DYNAMIC_OFFSET)
+				{
+					offset = this.SetBool("QueryClientMotdStatus", value);
 					return;
 				}
 			}

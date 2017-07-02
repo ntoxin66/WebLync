@@ -103,4 +103,11 @@
 		"ru"		"Открытие ссылки..."
 		"tr"		"Link Açılıyor..."
 	}
+	"WebLync.Convar.MotdDisabled"
+	{
+		"en"		"You must enable HTML MOTD by typing `cl_disablehtmlmotd 0` into your game console."
+		"fr"		"Vous devez activer HTML MOTD en tapant `cl_disablehtmlmotd 0` dans votre console de jeu."
+		"ru"		"Вы должны включить HTML MOTD, введя `cl_disablehtmlmotd 0` в свою игровую консоль."
+		"tr"		"HTML MOTD'yi, oyun konsolunuza `cl_disablehtmlmotd 0` yazarak etkinleştirmelisiniz."
+	}
 }
