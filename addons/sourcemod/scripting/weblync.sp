@@ -71,6 +71,14 @@ public void OnPluginEnd()
 		ParamCallbacks.Dispose();
 }
 
+public void OnLibraryRemoved(const char[] name)
+{
+	if (StrEqual(name, "dynamic"))
+	{
+		SetFailState("Required plugin Dynamic has been unloaded.");
+	}
+}
+
 public void OnConfigsExecuted()
 {
 	if (Settings.ForceEnableMotd)
