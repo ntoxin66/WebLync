@@ -365,6 +365,36 @@ methodmap Dynamic
 		return Dynamic_GetVectorByIndex(this, index, value);
 	}
 	
+	public Function GetFunction(const char[] membername, Function &value)
+	{
+		return Dynamic_GetFunction(this, membername, value);
+	}
+	
+	public DynamicOffset SetFunction(const char[] membername, Function value)
+	{
+		return Dynamic_SetFunction(this, membername, value);
+	}
+	
+	public Function GetFunctionByOffset(DynamicOffset offset)
+	{
+		return Dynamic_GetFunctionByOffset(this, offset);
+	}
+	
+	public void SetFunctionByOffset(DynamicOffset offset, Function value)
+	{
+		Dynamic_SetFunctionByOffset(this, offset, value);
+	}
+	
+	public int PushFunction(Function value, const char[] name="")
+	{
+		return Dynamic_PushFunction(this, value, name);
+	}
+	
+	public Function GetFunctionByIndex(int index)
+	{
+		return Dynamic_GetFunctionByIndex(this, index);
+	}
+	
 	public void HookChanges(Dynamic_HookType callback)
 	{
 		Dynamic_HookChanges(this, callback);	

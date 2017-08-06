@@ -16,24 +16,24 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#if defined _dynamic_class_weblyncparamcallback_
+#if defined _dynamic_class_weblynclink_
   #endinput
 #endif
-#define _dynamic_class_weblyncparamcallback_
+#define _dynamic_class_weblynclink_
 
-methodmap WebLyncParamCallback < Dynamic
+methodmap Link < Dynamic
 {
-	public WebLyncParamCallback()
+	public Link()
 	{
 		// First we make a new dymanic object
-		Dynamic myclass = Dynamic(2, 0);
+		Dynamic myclass = Dynamic(64, 0);
 
 		// Next we will define all the members
 		// -> We do this to force the offsets to always be in the same location
 		//    over multiple instances of the same class.
-		myclass.SetHandle("OwnerPlugin", null);
-		myclass.SetInt("Callback", -1);
-		return view_as<WebLyncParamCallback>(myclass);
+		myclass.SetString("Command", "", 64);
+		myclass.SetBool("Active", false);
+		return view_as<Link>(myclass);
 	}
 
 	// Note that I use static offsets to access members.
@@ -41,61 +41,60 @@ methodmap WebLyncParamCallback < Dynamic
 	// -> This is why we force the members in during the contructor
 	// -> Failure to force members in the constructor will cause corruption
 
-	property Handle OwnerPlugin
+	public bool GetCommand(char[] buffer, int length)
 	{
-		public get()
+		static DynamicOffset offset = INVALID_DYNAMIC_OFFSET;
+		if (offset == INVALID_DYNAMIC_OFFSET)
 		{
-			static DynamicOffset offset = INVALID_DYNAMIC_OFFSET;
+			offset = this.GetMemberOffset("Command");
 			if (offset == INVALID_DYNAMIC_OFFSET)
-			{
-				offset = this.GetMemberOffset("OwnerPlugin");
-				if (offset == INVALID_DYNAMIC_OFFSET)
-					SetFailState("A serious error occured in Dynamic!");
-			}
-			return this.GetHandleByOffset(offset);
+				SetFailState("A serious error occured in Dynamic!");
 		}
-		public set(Handle value)
-		{
-			static DynamicOffset offset = INVALID_DYNAMIC_OFFSET;
-			if (offset == INVALID_DYNAMIC_OFFSET)
-			{
-				offset = this.GetMemberOffset("OwnerPlugin");
-				if (offset == INVALID_DYNAMIC_OFFSET)
-				{
-					offset = this.SetHandle("OwnerPlugin", value);
-					return;
-				}
-			}
-			this.SetHandleByOffset(offset, value);
-		}
+		this.GetStringByOffset(offset, buffer, length);
+		return true;
 	}
 
-	property Function Callback
+	public void SetCommand(const char[] buffer)
+	{
+		static DynamicOffset offset = INVALID_DYNAMIC_OFFSET;
+		if (offset == INVALID_DYNAMIC_OFFSET)
+		{
+			offset = this.GetMemberOffset("Command");
+			if (offset == INVALID_DYNAMIC_OFFSET)
+			{
+				offset = this.SetString("Command", buffer);
+				return;
+			}
+		}
+		this.SetStringByOffset(offset, buffer);
+	}
+
+	property bool Active
 	{
 		public get()
 		{
 			static DynamicOffset offset = INVALID_DYNAMIC_OFFSET;
 			if (offset == INVALID_DYNAMIC_OFFSET)
 			{
-				offset = this.GetMemberOffset("Callback");
+				offset = this.GetMemberOffset("Active");
 				if (offset == INVALID_DYNAMIC_OFFSET)
 					SetFailState("A serious error occured in Dynamic!");
 			}
-			return this.GetFunctionByOffset(offset);
+			return this.GetBoolByOffset(offset);
 		}
-		public set(Function value)
+		public set(bool value)
 		{
 			static DynamicOffset offset = INVALID_DYNAMIC_OFFSET;
 			if (offset == INVALID_DYNAMIC_OFFSET)
 			{
-				offset = this.GetMemberOffset("Callback");
+				offset = this.GetMemberOffset("Active");
 				if (offset == INVALID_DYNAMIC_OFFSET)
 				{
-					offset = this.SetFunction("Callback", value);
+					offset = this.SetBool("Active", value);
 					return;
 				}
 			}
-			this.SetFunctionByOffset(offset, value);
+			this.SetBoolByOffset(offset, value);
 		}
 	}
 }
