@@ -110,4 +110,32 @@
 		"ru"		"Вы должны включить HTML MOTD, введя `cl_disablehtmlmotd 0` в свою игровую консоль."
 		"tr"		"HTML MOTD'yi, oyun konsolunuza `cl_disablehtmlmotd 0` yazarak etkinleştirmelisiniz."
 	}
+	"WebLync.SendLinkCommand.Usage"
+	{
+		"en"		"Usage: sm_sendlink <target> <linkname> <args>."
+		"fr"		"Usage: sm_sendlink <target> <linkname> <args>."
+		"ru"		"Применение: sm_sendlink <target> <linkname> <args>."
+		"tr"		"Kullanım: sm_sendlink <target> <linkname> <args>."
+	}
+	"WebLync.SendLinkCommand.NotRegistered"
+	{
+		"en"		"Link '%s' is not registered."
+		"fr"		"Le lien '%s' n'est pas enregistré."
+		"ru"		"Ссылка '%s' не зарегистрирована."
+		"tr"		"Link '%s' kaydedilmedi."
+	}
+	"WebLync.SendLinkCommand.LinkReceived"
+	{
+		"en"		"%N sent you a link (%s)."
+		"fr"		"%N vous a envoyé un lien (%s)."
+		"ru"		"%N отправил вам ссылку (%s)."
+		"tr"		"%N size bir bağlantı gönderdi (%s)."
+	}
+	"WebLync.SendLinkCommand.SentLink"
+	{
+		"en"		"Link sent to %d client(s)."
+		"fr"		"Lien envoyé à %d client(s)."
+		"ru"		"Ссылка отправлена %d клиентам."
+		"tr"		"Link, 10 müşteri (ler) e gönderildi."
+	}
 }
