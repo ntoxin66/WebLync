@@ -49,6 +49,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 public void OnPluginStart()
 {
 	LoadTranslations("webblync.phrases");
+	LoadTranslations("common.phrases");
 }
 
 public void OnAllPluginsLoaded()
@@ -165,7 +166,7 @@ public Action OnSendLinkCommand(int client, int args)
 {
 	if (args < 2)
 	{
-		PrintToConsole(client, "Usage: sm_sendlink <target> <linkname>");
+		ReplyToCommand(client, "[WebLync] %T", "WebLync.SendLinkCommand.Usage", LANG_SERVER);
 		return Plugin_Handled;
 	}
 	
@@ -173,21 +174,9 @@ public Action OnSendLinkCommand(int client, int args)
 	GetCmdArg(2, linkname, sizeof(linkname));
 	Format(linkname, sizeof(linkname), "sm_%s", linkname);
 	Link link = view_as<Link>(ServerLinks.GetDynamic(linkname));
-	if (!link.IsValid)
+	if (!link.IsValid || !link.Active)
 	{
-		ReplyToCommand(client, "[WebLync] Link '%s' is not registered1.. %d registered links...", linkname, ServerLinks.MemberCount);
-		
-		for (int i = 0; i < ServerLinks.MemberCount; i++)
-		{
-			ServerLinks.GetMemberNameByIndex(i, linkname, sizeof(linkname));
-			ReplyToCommand(client, "[WebLync] %s", linkname);
-		}
-		
-		return Plugin_Handled;
-	}
-	if (!link.Active)
-	{
-		ReplyToCommand(client, "[WebLync] Link '%s' is not registered2", linkname);
+		ReplyToCommand(client, "[WebLync] %T", "WebLync.SendLinkCommand.NotRegistered", LANG_SERVER, linkname);
 		return Plugin_Handled;
 	}
 	
@@ -211,10 +200,10 @@ public Action OnSendLinkCommand(int client, int args)
 			continue;
 		
 		DisplayWebLync(targets[i], linkname, true);
-		ReplyToCommand(targets[i], "[SM] %N sent you a link", client);
+		PrintToChat(targets[i], "[WebLync] %T", "WebLync.SendLinkCommand.LinkReceived", LANG_SERVER, client, linkname[3]);
 	}
 	
-	ReplyToCommand(client, "[SM] Link sent to %d client(s)", targetcount);
+	ReplyToCommand(client, "[WebLync] %T", "WebLync.SendLinkCommand.SentLink", LANG_SERVER, targetcount);
 	return Plugin_Handled;
 }
 
