@@ -119,23 +119,26 @@
 	}
 	"WebLync.SendLinkCommand.NotRegistered"
 	{
-		"en"		"Link '%s' is not registered."
-		"fr"		"Le lien '%s' n'est pas enregistré."
-		"ru"		"Ссылка '%s' не зарегистрирована."
-		"tr"		"Link '%s' kaydedilmedi."
+		"#format"	"{1:s}"
+		"en"		"Link '{1}' is not registered."
+		"fr"		"Le lien '{1}' n'est pas enregistré."
+		"ru"		"Ссылка '{1}' не зарегистрирована."
+		"tr"		"Link '{1}' kaydedilmedi."
 	}
 	"WebLync.SendLinkCommand.LinkReceived"
 	{
-		"en"		"%N sent you a link (%s)."
-		"fr"		"%N vous a envoyé un lien (%s)."
-		"ru"		"%N отправил вам ссылку (%s)."
-		"tr"		"%N size bir bağlantı gönderdi (%s)."
+		"#format"	"{1:N}{2:s}"
+		"en"		"{1} sent you a link ({2})."
+		"fr"		"{1} vous a envoyé un lien ({2})."
+		"ru"		"{1} отправил вам ссылку ({2})."
+		"tr"		"{1} size bir bağlantı gönderdi ({2})."
 	}
 	"WebLync.SendLinkCommand.SentLink"
 	{
-		"en"		"Link sent to %d client(s)."
-		"fr"		"Lien envoyé à %d client(s)."
-		"ru"		"Ссылка отправлена %d клиентам."
-		"tr"		"Link, 10 müşteri (ler) e gönderildi."
+		"#format"	"{1:d}"
+		"en"		"Link sent to {1} client(s)."
+		"fr"		"Lien envoyé à {1} client(s)."
+		"ru"		"Ссылка отправлена {1} клиентам."
+		"tr"		"Link, {1} müşteri (ler) e gönderildi."
 	}
 }
