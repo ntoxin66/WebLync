@@ -35,6 +35,7 @@ methodmap WebLyncSettings < Dynamic
 		myclass.SetBool("ShowMessages", true);
 		myclass.SetBool("ForceEnableMotd", true);
 		myclass.SetBool("QueryClientMotdStatus", true);
+		myclass.SetInt("HTTPMethod", 1);
 		return view_as<WebLyncSettings>(myclass);
 	}
 	
@@ -155,6 +156,35 @@ methodmap WebLyncSettings < Dynamic
 				}
 			}
 			this.SetBoolByOffset(offset, value);
+		}
+	}
+	
+	property int HTTPMethod
+	{
+		public get()
+		{
+			static DynamicOffset offset = INVALID_DYNAMIC_OFFSET;
+			if (offset == INVALID_DYNAMIC_OFFSET)
+			{
+				offset = this.GetMemberOffset("HTTPMethod");
+				if (offset == INVALID_DYNAMIC_OFFSET)
+					SetFailState("A serious error occured in Dynamic!");
+			}
+			return this.GetIntByOffset(offset);
+		}
+		public set(int value)
+		{
+			static DynamicOffset offset = INVALID_DYNAMIC_OFFSET;
+			if (offset == INVALID_DYNAMIC_OFFSET)
+			{
+				offset = this.GetMemberOffset("HTTPMethod");
+				if (offset == INVALID_DYNAMIC_OFFSET)
+				{
+					offset = this.SetInt("HTTPMethod", value);
+					return;
+				}
+			}
+			this.SetIntByOffset(offset, value);
 		}
 	}
 	
