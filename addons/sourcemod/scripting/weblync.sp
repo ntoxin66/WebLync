@@ -35,7 +35,7 @@ public Plugin myinfo =
 	name = "WebLync",
 	author = "Neuro Toxin",
 	description = "Browser redirection for CS:GO",
-	version = "0.0.12",
+	version = "0.0.13",
 	url = "https://weblync.tokenstash.com"
 }
 
@@ -124,7 +124,7 @@ stock void RegisterCommands()
 
 public Action OnWebLyncCommand(int client, int args)
 {
-	DisplayWebLync(client, "sm_weblync");
+	DisplayWebLyncUrl(client, "https://weblync.tokenstash.com/");
 	return Plugin_Handled;
 }
 
